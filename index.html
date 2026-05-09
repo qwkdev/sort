@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Sort Questions | SQA.MY</title>
+	<style>
+:root {
+	--u: 2vw;
+
+	--bg: #161618;
+	--bg2: #2a2a2b;
+	--bg3: #202021;
+	--bg4: #444445;
+	--bg5: #676768;
+
+	--px: 1px;
+	--grid: round(calc(2 * var(--u)), calc(10 * var(--px)));
+}
+*::selection {
+	background: #fff7;
+}
+*[hidden] {
+	display: none !important;
+}
+*::-webkit-scrollbar {
+	display: none;
+}
+
+.btn {
+	--btn-h: var(--h);
+	--btn-s: var(--s);
+	--btn-l: var(--l);
+	--br: calc(.5 * var(--u));
+	--border: calc(.15 * var(--u));
+
+	box-sizing: border-box;
+	font-family: Arial;
+	font-size: calc(2 * var(--u));
+	color: #fff;
+
+	background: hsl(var(--btn-h), calc(83% * var(--btn-s)), calc(57% * var(--btn-l)));
+	border: var(--border) solid hsl(var(--btn-h), calc(70% * var(--btn-s)), calc(48% * var(--btn-l)));
+	border-radius: var(--br);
+	box-shadow:
+		0 calc(var(--border)/2) calc(var(--border)/2) var(--border) hsla(var(--btn-h), calc(72% * var(--btn-s)), calc(30% * var(--btn-l)), 0.2),
+		inset 0 calc(-1 * var(--border)) var(--border) 0 hsl(var(--btn-h), calc(70% * var(--btn-s)), calc(48% * var(--btn-l))),
+		inset 0 0 0 var(--border) hsl(var(--btn-h), calc(92% * var(--btn-s)), calc(62% * var(--btn-l)));
+
+	transition: .2s;
+}
+.btn:hover {
+	--btn-l: calc(var(--l) * 1.05);
+	transform: scale(1.05);
+}
+.btn:focus {
+	outline: none;
+}
+.action {
+	--h: 250;
+	--s: 1;
+	--l: 1;
+}
+.action1 {
+	--h: 135;
+	--s: .7;
+	--l: .8;
+}
+.action2 {
+	--h: 0;
+	--s: .8;
+	--l: .5;
+}
+.underlined {
+	color: #fff;
+	font-family: Arial;
+	font-weight: 500;
+	position: relative;
+	transition: .2s;
+	z-index: 2;
+	text-decoration: none;
+}
+.underline {
+	--widen: 0%;
+	--fix: 0%;
+	width: calc(100% + var(--widen));
+	transform: translateX(calc(-100% + var(--fix)));
+	height: 1px;
+	background: #fff;
+	position: absolute;
+	bottom: 0;
+	transition: .2s;
+	z-index: -1;
+}
+.underlined:hover {
+	color: #000;
+}
+.underlined:hover .underline {
+	height: 100%;
+}
+.underlined::selection {
+	background: #ffffff55;
+}
+
+body {
+	margin: 0;
+	background: var(--bg);
+	background-image: linear-gradient(0deg, var(--bg2) 0, var(--bg2) var(--px), transparent var(--px), transparent 100%),
+				linear-gradient(90deg, var(--bg2) 0, var(--bg2) var(--px), transparent var(--px), transparent 100%);
+	background-size: var(--grid) var(--grid);
+}
+
+input {
+	width: 100%;
+	box-sizing: border-box;
+	padding: calc(.5 * var(--u));
+	background: var(--bg3);
+	border: var(--px) solid var(--bg4);
+	font-family: monospace;
+	font-size: calc(1.5 * var(--u));
+	color: #fff;
+	transition: .3s;
+}
+input:focus {
+	outline: none;
+	border-color: var(--bg5);
+}
+input::placeholder {
+	color: var(--bg5);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+input[type=number] {
+	-moz-appearance: textfield;
+	appearance: textfield;
+}
+
+#portal {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+
+	width: round(calc(40 * var(--u)), var(--grid)); /*! TODO !*/
+	background: var(--bg);
+	border: var(--px) solid var(--bg2);
+	border-radius: calc(2 * var(--u));
+	padding: calc(2 * var(--u));
+	box-sizing: border-box;
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	h1, p {
+		width: 100%;
+		font-family: Arial;
+		color: #fff;
+		margin: 0;
+	}
+	h1 {
+		width: 100%;
+		text-align: center;
+		font-weight: 700;
+		font-size: calc(2.5 * var(--u));
+		margin-bottom: calc(2 * var(--u)) 0;
+	}
+	p {
+		font-size: calc(1.5 * var(--u));
+		margin: calc(1 * var(--u)) 0 calc(.2 * var(--u)) 0;
+	}
+	button {
+		margin-top: calc(1 * var(--u));
+		padding: calc(.5 * var(--u)) calc(1.5 * var(--u));
+	}
+}
+
+#mobile-wall {
+	display: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: var(--bg);
+	z-index: 10000;
+}
+#mobile-wall p {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	margin: 0;
+	width: 70vw;
+	font-weight: 500;
+	font-family: Arial;
+	font-size: 5vw;
+	text-align: center;
+	color: #fff;
+}
+@media only screen and (max-aspect-ratio: 1/1) {
+	#mobile-wall {
+		/* display: block; */
+	}
+}
+
+@media only screen and (min-aspect-ratio: 1/1) {
+	:root {
+		--u: 1.4vh;
+	}
+}
+
+@media (min-resolution: 2dppx) { :root { --px: .5px; } }
+	</style>
+</head>
+<body>
+	<div id="mobile-wall">
+		<p>
+			Your screen is too small to use this site,<br>
+			Please use a wider screen.
+		</p>
+	</div>
+	<main id="portal">
+		<h1>sort.sqa.my</h1>
+		<p>Enter Paper URL:</p>
+		<input type="text" id="paper" placeholder="sqa.my/...">
+		<p>Enter Marking URL:</p>
+		<input type="text" id="marking" placeholder="sqa.my/...">
+		<button class="btn action1">Start</button>
+	</main>
+</body>
+</html>
