@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Sort Questions | SQA.MY</title>
+	<style>
+:root {
+	--u: 2vw;
+
+	--bg: #161618;
+	--bg2: #2a2a2b;
+	--bg3: #202021;
+	--bg4: #444445;
+	--bg5: #676768;
+
+	--px: 1px;
+	--grid: round(calc(2 * var(--u)), calc(10 * var(--px)));
+}
+*::selection {
+	background: #fff7;
+}
+*[hidden] {
+	display: none !important;
+}
+*::-webkit-scrollbar {
+	display: none;
+}
+
+.btn {
+	--btn-h: var(--h);
+	--btn-s: var(--s);
+	--btn-l: var(--l);
+	--br: calc(.5 * var(--u));
+	--border: calc(.15 * var(--u));
+
+	box-sizing: border-box;
+	font-family: Arial;
+	font-size: calc(2 * var(--u));
+	color: #fff;
+
+	background: hsl(var(--btn-h), calc(83% * var(--btn-s)), calc(57% * var(--btn-l)));
+	border: var(--border) solid hsl(var(--btn-h), calc(70% * var(--btn-s)), calc(48% * var(--btn-l)));
+	border-radius: var(--br);
+	box-shadow:
+		0 calc(var(--border)/2) calc(var(--border)/2) var(--border) hsla(var(--btn-h), calc(72% * var(--btn-s)), calc(30% * var(--btn-l)), 0.2),
+		inset 0 calc(-1 * var(--border)) var(--border) 0 hsl(var(--btn-h), calc(70% * var(--btn-s)), calc(48% * var(--btn-l))),
+		inset 0 0 0 var(--border) hsl(var(--btn-h), calc(92% * var(--btn-s)), calc(62% * var(--btn-l)));
+
+	transition: .2s;
+}
+.btn:hover {
+	--btn-l: calc(var(--l) * 1.05);
+	transform: scale(1.05);
+}
+.btn:focus {
+	outline: none;
+}
+.action {
+	--h: 250;
+	--s: 1;
+	--l: 1;
+}
+.action1 {
+	--h: 135;
+	--s: .7;
+	--l: .8;
+}
+.action2 {
+	--h: 0;
+	--s: .8;
+	--l: .5;
+}
+.underlined {
+	color: #fff;
+	font-family: Arial;
+	font-weight: 500;
+	position: relative;
+	transition: .2s;
+	z-index: 2;
+	text-decoration: none;
+}
+.underline {
+	--widen: 0%;
+	--fix: 0%;
+	width: calc(100% + var(--widen));
+	transform: translateX(calc(-100% + var(--fix)));
+	height: 1px;
+	background: #fff;
+	position: absolute;
+	bottom: 0;
+	transition: .2s;
+	z-index: -1;
+}
+.underlined:hover {
+	color: #000;
+}
+.underlined:hover .underline {
+	height: 100%;
+}
+.underlined::selection {
+	background: #ffffff55;
+}
+
+body {
+	margin: 0;
+	background: var(--bg);
+	background-image: linear-gradient(0deg, var(--bg2) 0, var(--bg2) var(--px), transparent var(--px), transparent 100%),
+				linear-gradient(90deg, var(--bg2) 0, var(--bg2) var(--px), transparent var(--px), transparent 100%);
+	background-size: var(--grid) var(--grid);
+	overflow: hidden;
+}
+
+input {
+	width: 100%;
+	box-sizing: border-box;
+	padding: calc(.5 * var(--u));
+	background: var(--bg3);
+	border: var(--px) solid var(--bg4);
+	font-family: monospace;
+	font-size: calc(1.5 * var(--u));
+	color: #fff;
+	transition: .3s;
+}
+input:focus {
+	outline: none;
+	border-color: var(--bg5);
+}
+input::placeholder {
+	color: var(--bg5);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+input[type=number] {
+	-moz-appearance: textfield;
+	appearance: textfield;
+}
+
+#layout {
+	--pdf: round(min(75vh, 33vw), var(--px));
+	display: grid;
+	grid-template-columns: calc(50vw - var(--pdf)) var(--pdf) var(--pdf) calc(50vw - var(--pdf));	
+
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	box-sizing: border-box;
+}
+#left {
+	padding: 5%;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	gap: calc(1 * var(--u));
+}
+#logo, #options, #right {
+	width: 100%;
+	background: var(--bg);
+	border: var(--px) solid var(--bg2);
+	border-radius: calc(2 * var(--u));
+	box-sizing: border-box;
+}
+#logo h1 {
+	width: 100%;
+	font-family: Arial;
+	color: #fff;
+	margin: calc(2.5 * var(--u)) 0;
+	text-align: center;
+	font-weight: 700;
+	font-size: calc(2.5 * var(--u));
+}
+#options {
+	height: 100%;
+}
+#right {
+	margin: 5%;
+	width: 90%;
+	box-sizing: border-box;
+}
+#paper {
+	margin-right: round(calc(.25 * var(--u)), var(--px));
+}
+#marking {
+	margin-left: round(calc(.25 * var(--u)), var(--px));
+}
+.pdf {
+	position: relative;
+
+	p {
+		position: absolute;
+		bottom: 0;
+		left: 50%;
+		transform: translateX(-50%);
+
+		box-sizing: border-box;
+		width: min-content;
+		padding: calc(.5 * var(--u)) calc(1 * var(--u));
+		font-size: calc(1.5 * var(--u));
+
+		background: var(--bg);
+		border: var(--px) solid var(--bg2);
+		border-radius: calc(.5 * var(--u));
+		
+		color: #ddd;
+		font-family: monospace;
+	}
+	.btn {
+		position: absolute;
+		bottom: calc(.5 * var(--u));
+		width: calc(5 * var(--u));
+		height: calc(5 * var(--u));
+
+		--h: 0;
+		--s: 0;
+		--l: .6;
+
+		svg {
+			position: absolute;
+			top: 51%;
+			transform: translate(-50%, -50%);
+			stroke: #ddd;
+
+			width: 70%;
+			height: 70%;
+		}
+	}
+	.prev {
+		left: 0;
+		svg {
+			left: 49%;
+		}
+	}
+	.next {
+		right: 0;
+		svg {
+			left: 51%;
+		}
+	}
+	canvas {
+		position: absolute;
+		top: calc(50% - var(--px));
+		left: calc(50% - var(--px));
+		transform: translate(-50%, -50%);
+
+		width: 100%;
+		height: auto;
+	}
+}
+
+#mobile-wall {
+	display: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background: var(--bg);
+	z-index: 10000;
+}
+#mobile-wall p {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	margin: 0;
+	width: 70vw;
+	font-weight: 500;
+	font-family: Arial;
+	font-size: 5vw;
+	text-align: center;
+	color: #fff;
+}
+@media only screen and (max-aspect-ratio: 5/4) {
+	#mobile-wall {
+		display: block;
+	}
+}
+
+@media only screen and (min-aspect-ratio: 1/1) {
+	:root {
+		--u: 1.4vh;
+	}
+}
+
+@media (min-resolution: 2dppx) { :root { --px: .5px; } }
+	</style>
+</head>
+<body>
+	<div id="mobile-wall">
+		<p>
+			Your screen is too small to use this site,<br>
+			Please use a wider screen.
+		</p>
+	</div>
+
+	<svg hidden>
+		<symbol id="prev" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path d="M15 6L9 12L15 18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+		</symbol>
+		<symbol id="next" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path d="M9 6L15 12L9 18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+		</symbol>
+	</svg>
+	
+	<main id="layout">
+		<div id="left">
+			<div id="logo">
+				<h1>sort.sqa.my</h1>
+			</div>
+			<div id="options">
+				<p>a</p>
+			</div>
+		</div>
+		<div id="paper" class="pdf">
+			<canvas id="pcanvas"></canvas>
+			<button class="btn prev" onclick="turn(0, -1)"><svg><use href="#prev"/></svg></button>
+			<button class="btn next" onclick="turn(0, 1)"><svg><use href="#next"/></svg></button>
+			<p id="ppn">...</p>
+		</div>
+		<div id="marking" class="pdf">
+			<canvas id="mcanvas"></canvas>
+			<button class="btn prev" onclick="turn(1, -1)"><svg><use href="#prev"/></svg></button>
+			<button class="btn next" onclick="turn(1, 1)"><svg><use href="#next"/></svg></button>
+			<p id="mpn">...</p>
+		</div>
+		<div id="right">
+			<p>a</p>
+		</div>
+	</main>
+
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js'></script>
+	<script>
+		const rawData = window.location.search.slice(1);
+		// const data = atob(rawData)?.split('\n');
+
+		const data = [
+			"https://higher.sqa.my/maths/2025/H_Maths_2025_Paper1.pdf",
+			"https://higher.sqa.my/maths/2025/H_Maths_2025_Marking1.pdf"
+		];
+
+		let state = [{
+			url: data[0],
+			canvas: document.getElementById('pcanvas'),
+			num: document.getElementById('ppn'),
+			pdf: null,
+			page: 1,
+			total: 0,
+			isRendering: false,
+			pending: null
+		}, {
+			url: data[1],
+			canvas: document.getElementById('mcanvas'),
+			num: document.getElementById('mpn'),
+			pdf: null,
+			page: 1,
+			total: 0,
+			isRendering: false,
+			pending: null
+		}];
+
+		function render(pdf, n) {
+			pdf.isRendering = true;
+			pdf.pdf.getPage(n).then(page => {
+				const viewport = page.getViewport({ scale: 1.5 });
+				pdf.canvas.height = viewport.height;
+				pdf.canvas.width = viewport.width;
+				return page.render({ canvasContext: pdf.canvas.getContext('2d'), viewport }).promise;
+			}).then(() => {
+				pdf.isRendering = false;
+				pdf.num.innerText = `${pdf.page}/${pdf.total}`;
+				if (pdf.pending !== null) {
+					const old = pdf.pending;
+					pdf.pending = null;
+					render(pdf, old);
+				}
+			});
+		}
+
+		function queue(pdf, n) {
+			if (pdf.isRendering) pdf.pending = n;
+			else render(pdf, n);
+		}
+
+		function turn(pdfn, delta) {
+			const pdf = state[pdfn];
+			if (pdf.page + delta < 1 || pdf.page + delta > pdf.total) return;
+			pdf.page += delta;
+			queue(pdf, pdf.page);
+		}
+
+		for (const pdf of state) {
+			pdfjsLib.getDocument(pdf.url).promise.then(e => {
+				pdf.pdf = e;
+				pdf.total = e.numPages;
+				render(pdf, pdf.page);
+			});
+		}
+	</script>
+</body>
+</html>

@@ -163,7 +163,6 @@ input[type=number] {
 		margin: 0;
 	}
 	h1 {
-		width: 100%;
 		text-align: center;
 		font-weight: 700;
 		font-size: calc(2.5 * var(--u));
@@ -202,9 +201,9 @@ input[type=number] {
 	text-align: center;
 	color: #fff;
 }
-@media only screen and (max-aspect-ratio: 1/1) {
+@media only screen and (max-aspect-ratio: 5/4) {
 	#mobile-wall {
-		/* display: block; */
+		display: block;
 	}
 }
 
@@ -230,7 +229,25 @@ input[type=number] {
 		<input type="text" id="paper" placeholder="sqa.my/...">
 		<p>Enter Marking URL:</p>
 		<input type="text" id="marking" placeholder="sqa.my/...">
-		<button class="btn action1">Start</button>
+		<button class="btn action1" onclick="submit()">Start</button>
 	</main>
+
+	<script>
+		const paper = document.getElementById('paper');
+		const marking = document.getElementById('marking');
+
+		function removePrefix(s, p) {
+			return s.startsWith(p) ? s.slice(p.length) : s;
+		}
+		function format(url) {
+			let n = removePrefix(url, 'https://');
+			n = removePrefix(url, 'http://');
+			return n
+		}
+		function submit() {
+			const data = btoa(`${format(paper.value)}\n${format(marking.value)}`);
+			window.location.href = `/paper?${data}`;
+		}
+	</script>
 </body>
 </html>
