@@ -140,6 +140,84 @@ input[type=number] {
 	appearance: textfield;
 }
 
+.select {
+	--gui-width: 20vw;
+	display: grid;
+	grid-template-rows: 1fr 3fr;
+	height: calc(var(--gui-width) * 0.1);
+
+	.choice {
+		position: relative;
+		width: 100%;
+		height: calc(var(--gui-width) * 0.1);
+		background-color: #ffffff1a;
+		border: calc(var(--gui-width) * 0.007) solid #ffffff2a;
+		border-radius: calc(var(--gui-width) * 0.02);
+		background-size: cover;
+		background-position: center;
+		background-repeat: no-repeat;
+		transition: .2s;
+		font-size: calc(var(--gui-width) * 0.04);
+		color: #fff;
+		text-align: left;
+		padding-left: calc(var(--gui-width) * 0.02);
+		
+		p {
+			width: 0;
+			white-space: nowrap;
+			margin-block-start: 0 !important;
+			margin-block-end: 0 !important;
+		}
+		svg {
+			position: absolute;
+			top: calc(var(--gui-width) * 0.005);
+			right: calc(var(--gui-width) * 0.005);
+			width: calc(var(--gui-width) * 0.08);
+			height: calc(var(--gui-width) * 0.08);
+
+			path {
+				stroke: #fff;
+			}
+		}
+		&:hover {
+			background-color: #ffffff2a;
+			border-color: #ffffff3a;
+		}
+	}
+	.options {
+		position: relative;
+		z-index: 2;
+		width: 100%;
+		height: calc(var(--gui-width) * 0.3);
+		overflow-x: hidden;
+		overflow-y: scroll;
+		border-radius: calc(var(--gui-width) * 0.02);
+		background: #00001055;
+		backdrop-filter: blur(calc(var(--gui-width) * 0.01));
+
+		button {
+			position: relative;
+			width: 100%;
+			height: calc(var(--gui-width) * 0.1);
+			background: none;
+			border: none;
+			border-radius: 0;
+			background-position: center;
+			background-repeat: no-repeat;
+			background-size: cover;
+			transition: .2s;
+			font-size: calc(var(--gui-width) * 0.04);
+			color: #fff;
+			text-align: left;
+			padding-left: calc(var(--gui-width) * 0.02);
+			white-space: nowrap;
+			&:hover {
+				background: #ffffff11;
+			}
+		}
+	}
+}
+
 #layout {
 	--pdf: round(min(75vh, 33vw), var(--px));
 	display: grid;
@@ -180,8 +258,30 @@ input[type=number] {
 }
 #right {
 	margin: 5%;
+	padding: calc(1.5 * var(--u));
+	padding-top: 0;
 	width: 90%;
 	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	h1, p {
+		width: 100%;
+		font-family: Arial;
+		color: #fff;
+		margin: 0;
+	}
+	h1 {
+		text-align: center;
+		font-weight: 700;
+		font-size: calc(2.5 * var(--u));
+		margin: calc(2.5 * var(--u)) 0;
+	}
+	p {
+		font-size: calc(1.5 * var(--u));
+		margin-bottom: calc(.2 * var(--u));
+	}
 }
 #paper {
 	margin-right: round(calc(.25 * var(--u)), var(--px));
@@ -330,7 +430,22 @@ input[type=number] {
 			<p id="mpn">...</p>
 		</div>
 		<div id="right">
-			<p>a</p>
+			<h1>Add Question</h1>
+			<p>Question Number:</p>
+			<input type="text" id="qn">
+
+			<p>Select Topic:</p>
+			<div class="select">
+				<button class="choice">
+					<p>Default Banner</p>
+					<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path d="M7 10L12 15L17 10" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>
+				</button>
+				<div class="options">
+					<button data-value="alphabetSoup">Alphabet Soup</button>
+					<button data-value="artClass">Art Class</button>
+					<button data-value="xylophone">Xylophone</button>
+				</div>
+			</div>
 		</div>
 	</main>
 
@@ -344,7 +459,7 @@ input[type=number] {
 			"https://higher.sqa.my/maths/2025/H_Maths_2025_Marking1.pdf"
 		];
 
-		let state = [{
+		let pdfs = [{
 			url: data[0],
 			canvas: document.getElementById('pcanvas'),
 			num: document.getElementById('ppn'),
@@ -363,6 +478,13 @@ input[type=number] {
 			isRendering: false,
 			pending: null
 		}];
+
+		let state = {
+			u: data,
+			q: {}
+		};
+
+
 
 		function render(pdf, n) {
 			pdf.isRendering = true;
@@ -388,13 +510,13 @@ input[type=number] {
 		}
 
 		function turn(pdfn, delta) {
-			const pdf = state[pdfn];
+			const pdf = pdfs[pdfn];
 			if (pdf.page + delta < 1 || pdf.page + delta > pdf.total) return;
 			pdf.page += delta;
 			queue(pdf, pdf.page);
 		}
 
-		for (const pdf of state) {
+		for (const pdf of pdfs) {
 			pdfjsLib.getDocument(pdf.url).promise.then(e => {
 				pdf.pdf = e;
 				pdf.total = e.numPages;
