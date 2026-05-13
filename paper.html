@@ -11,6 +11,7 @@
 	--bg: #161618;
 	--bg2: #2a2a2b;
 	--bg3: #202021;
+	--bg3h: #2a2a2b;
 	--bg4: #444445;
 	--bg5: #676768;
 
@@ -113,10 +114,12 @@ body {
 
 input {
 	width: 100%;
+	height: calc(3 * var(--u));
 	box-sizing: border-box;
 	padding: calc(.5 * var(--u));
 	background: var(--bg3);
 	border: var(--px) solid var(--bg4);
+	border-radius: calc(.5 * var(--u));
 	font-family: monospace;
 	font-size: calc(1.5 * var(--u));
 	color: #fff;
@@ -141,27 +144,26 @@ input[type=number] {
 }
 
 .select {
-	--gui-width: 20vw;
 	display: grid;
 	grid-template-rows: 1fr 3fr;
-	height: calc(var(--gui-width) * 0.1);
+	height: calc(3 * var(--u));
+	width: 100%;
 
-	.choice {
+	.choice, .options button {
 		position: relative;
 		width: 100%;
-		height: calc(var(--gui-width) * 0.1);
-		background-color: #ffffff1a;
-		border: calc(var(--gui-width) * 0.007) solid #ffffff2a;
-		border-radius: calc(var(--gui-width) * 0.02);
-		background-size: cover;
-		background-position: center;
-		background-repeat: no-repeat;
+		height: calc(3 * var(--u));
 		transition: .2s;
-		font-size: calc(var(--gui-width) * 0.04);
+		font-size: calc(1.5 * var(--u));
 		color: #fff;
 		text-align: left;
-		padding-left: calc(var(--gui-width) * 0.02);
-		
+		padding-left: calc(.6 * var(--u));
+	}
+	.choice {
+		background: var(--bg3);
+		border: var(--px) solid var(--bg4);
+		border-radius: calc(.5 * var(--u));
+
 		p {
 			width: 0;
 			white-space: nowrap;
@@ -170,49 +172,38 @@ input[type=number] {
 		}
 		svg {
 			position: absolute;
-			top: calc(var(--gui-width) * 0.005);
-			right: calc(var(--gui-width) * 0.005);
-			width: calc(var(--gui-width) * 0.08);
-			height: calc(var(--gui-width) * 0.08);
+			top: calc(.25 * var(--u));
+			right: calc(.25 * var(--u));
+			width: calc(2.5 * var(--u));
+			height: calc(2.5 * var(--u));
 
 			path {
 				stroke: #fff;
 			}
 		}
 		&:hover {
-			background-color: #ffffff2a;
-			border-color: #ffffff3a;
+			background-color: var(--bg3h);
+			border-color: var(--bg5);
 		}
 	}
 	.options {
 		position: relative;
 		z-index: 2;
 		width: 100%;
-		height: calc(var(--gui-width) * 0.3);
+		height: calc(9 * var(--u));
 		overflow-x: hidden;
 		overflow-y: scroll;
-		border-radius: calc(var(--gui-width) * 0.02);
-		background: #00001055;
-		backdrop-filter: blur(calc(var(--gui-width) * 0.01));
+		background: var(--bg3);
+		border: var(--px) solid var(--bg4);
+		border-radius: calc(.5 * var(--u));
 
 		button {
-			position: relative;
-			width: 100%;
-			height: calc(var(--gui-width) * 0.1);
 			background: none;
 			border: none;
 			border-radius: 0;
-			background-position: center;
-			background-repeat: no-repeat;
-			background-size: cover;
-			transition: .2s;
-			font-size: calc(var(--gui-width) * 0.04);
-			color: #fff;
-			text-align: left;
-			padding-left: calc(var(--gui-width) * 0.02);
 			white-space: nowrap;
 			&:hover {
-				background: #ffffff11;
+				background: var(--bg3h);
 			}
 		}
 	}
@@ -281,6 +272,12 @@ input[type=number] {
 	p {
 		font-size: calc(1.5 * var(--u));
 		margin-bottom: calc(.2 * var(--u));
+	}
+	input, .select {
+		margin-bottom: calc(1 * var(--u));
+	}
+	.btn {
+		padding: calc(.75 * var(--u)) calc(1.5 * var(--u));
 	}
 }
 #paper {
@@ -435,17 +432,23 @@ input[type=number] {
 			<input type="text" id="qn">
 
 			<p>Select Topic:</p>
-			<div class="select">
-				<button class="choice">
-					<p>Default Banner</p>
+			<div class="select" id="selecttopic" data-value="None">
+				<button class="choice" onclick="toggleSelect()">
+					<p>None</p>
 					<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path d="M7 10L12 15L17 10" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>
 				</button>
-				<div class="options">
-					<button data-value="alphabetSoup">Alphabet Soup</button>
-					<button data-value="artClass">Art Class</button>
-					<button data-value="xylophone">Xylophone</button>
+				<div class="options" id="topicoptions" hidden>
+					<button onclick="select(this)" data-value="alphabetSoup">Alphabet Soup</button>
+					<button onclick="select(this)" data-value="artClass">Art Class</button>
+					<button onclick="select(this)" data-value="xylophone">Xylophone</button>
+					<button onclick="select(this)" data-value="alphabetSoup">Alphabet Soup</button>
+					<button onclick="select(this)" data-value="artClass">Art Class</button>
+					<button onclick="select(this)" data-value="xylophone">Xylophone</button>
+					<button onclick="select(this)" data-value="None">None</button>
 				</div>
 			</div>
+
+			<button class="btn action1">Save</button>
 		</div>
 	</main>
 
@@ -484,7 +487,22 @@ input[type=number] {
 			q: {}
 		};
 
+		const selectTopic = document.getElementById('selecttopic');
+		const topicOptions = document.getElementById('topicoptions');
 
+		function select(e) {
+			selectTopic.querySelector('p').innerText = e.innerText;
+			selectTopic.dataset.value = e.dataset.value;
+			topicOptions.hidden = true;
+		}
+		function toggleSelect() {
+			topicOptions.hidden = topicOptions.hidden ? false : true;
+		}
+		document.addEventListener('mousedown', e => {
+			if (!topicOptions.hidden && !topicOptions.contains(e.target) && !selectTopic.contains(e.target)) {
+				topicOptions.hidden = true;
+			}
+		});
 
 		function render(pdf, n) {
 			pdf.isRendering = true;
