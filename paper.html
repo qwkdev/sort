@@ -172,14 +172,12 @@ input[type=number] {
 		}
 		svg {
 			position: absolute;
-			top: calc(.25 * var(--u));
-			right: calc(.25 * var(--u));
-			width: calc(2.5 * var(--u));
-			height: calc(2.5 * var(--u));
+			top: calc(.45 * var(--u));
+			right: calc(.45 * var(--u));
+			width: calc(2 * var(--u));
+			height: calc(2 * var(--u));
 
-			path {
-				stroke: #fff;
-			}
+			stroke: #fff;
 		}
 		&:hover {
 			background-color: var(--bg3h);
@@ -243,9 +241,6 @@ input[type=number] {
 	text-align: center;
 	font-weight: 700;
 	font-size: calc(2.5 * var(--u));
-}
-#options {
-	height: 100%;
 }
 #right {
 	margin: 5%;
@@ -350,6 +345,111 @@ input[type=number] {
 	}
 }
 
+#options {
+	height: 100%;
+
+	display: grid;
+	grid-template-rows: 1fr auto;
+}
+#topics {
+	/* * { outline: 1px solid red; } */
+	height: 100%;
+	max-height: 100%;
+	margin: 5%;
+	padding-bottom: 5%;
+
+	display: grid;
+	/* flex-direction: column; */
+	grid-template-columns: 1fr;
+	gap: calc(1 * var(--u));
+
+	overflow: hidden;
+	/* overflow-x: hidden; */
+	/* overflow-y: scroll; */
+
+	&[data-value="0"] button.topicaction { display: none; }
+	&[data-value="1"] svg.topicaction { display: none; }
+}
+.topic {
+	position: relative;
+	height: calc(5 * var(--u));
+	width: 100%;
+	background: var(--bg);
+	border: var(--px) solid var(--bg2);
+	border-radius: calc(1 * var(--u));
+	box-sizing: border-box;
+
+	padding: 5%;
+
+	display: grid;
+	grid-template-columns: auto calc(2 * var(--u));
+	grid-template-rows: auto 1fr;
+
+	h3, h4 {
+		font-family: Arial;
+		margin: 0;
+		font-weight: 500;
+		height: min-content;
+	}
+	h3 {
+		font-size: calc(2 * var(--u));
+		color: #fff;
+	}
+	h4 {
+		font-size: calc(1.5 * var(--u));
+		color: var(--bg5);
+	}
+	.topicaction {
+		grid-column: 2 / 3;
+		grid-row: 1 / 3;
+	}
+	svg.topicaction {
+		justify-self: center;
+		align-self: center;
+		width: calc(2 * var(--u));
+		height: calc(2 * var(--u));
+
+		stroke: #fff;
+	}
+	button.topicaction {
+		position: relative;
+		justify-self: center;
+		align-self: center;
+		width: calc(2 * var(--u));
+		height: calc(2 * var(--u));
+		transition: .3s;
+		
+		svg {
+			position: absolute;
+			top: 51%;
+			left: 51%;
+			transform: translate(-50%, -50%);
+
+			width: calc(1.5 * var(--u));
+			height: calc(1.5 * var(--u));
+			stroke: #fff;
+		}
+		&:hover {
+			transform: scale(1.1);
+		}
+	}
+	.intopic {
+		/* position: absolute; */
+		top: 100%;
+		z-index: 100;
+
+		width: 100%;
+
+		border: 1px solid red;
+		box-sizing: border-box;
+	}
+}
+#newtopic {
+	padding: calc(.75 * var(--u)) calc(1.5 * var(--u));
+	align-self: center;
+	margin: 5%;
+}
+
 #mobile-wall {
 	display: none;
 	position: absolute;
@@ -374,9 +474,10 @@ input[type=number] {
 	color: #fff;
 }
 @media only screen and (max-aspect-ratio: 5/4) {
-	#mobile-wall {
+	#layout { --pdf: 20px; }
+	/* #mobile-wall {
 		display: block;
-	}
+	} */
 }
 
 @media only screen and (min-aspect-ratio: 1/1) {
@@ -397,11 +498,17 @@ input[type=number] {
 	</div>
 
 	<svg hidden>
-		<symbol id="prev" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<path d="M15 6L9 12L15 18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+		<symbol id="icon-prev" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path d="M15 6L9 12L15 18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
 		</symbol>
-		<symbol id="next" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-			<path d="M9 6L15 12L9 18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+		<symbol id="icon-next" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path d="M9 6L15 12L9 18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+		</symbol>
+		<symbol id="icon-toggle" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path d="M6 9L12 15L18 9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+		</symbol>
+		<symbol id="icon-x" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+			<path d="M6 6L18 18M18 6L6 18" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
 		</symbol>
 	</svg>
 	
@@ -411,19 +518,105 @@ input[type=number] {
 				<h1>sort.sqa.my</h1>
 			</div>
 			<div id="options">
-				<p>a</p>
+				<div id="topics" data-value="0">
+					<div class="topic" onclick="">
+						<h3>Differentiation</h3>
+						<h4>67 Questions</h4>
+
+						<svg class="topicaction"><use href="#icon-toggle"/></svg>
+						<button class="topicaction btn action2"><svg><use href="#icon-x"/></svg></button>
+
+						<div class="intopic">
+							<div class="sorted">
+								<p>6a</p>
+								<!-- <button class="btn action2"><svg><use href="#icon-x"/></svg></button> -->
+							</div>
+						</div>
+					</div>
+					<div class="topic" onclick="">
+						<h3>Differentiation</h3>
+						<h4>67 Questions</h4>
+
+						<svg class="topicaction"><use href="#icon-toggle"/></svg>
+						<button class="topicaction btn action2"><svg><use href="#icon-x"/></svg></button>
+
+						<div class="intopic">
+							<div class="sorted">
+								<p>6a</p>
+								<!-- <button class="btn action2"><svg><use href="#icon-x"/></svg></button> -->
+							</div>
+						</div>
+					</div>
+					<div class="topic" onclick="">
+						<h3>Differentiation</h3>
+						<h4>67 Questions</h4>
+
+						<svg class="topicaction"><use href="#icon-toggle"/></svg>
+						<button class="topicaction btn action2"><svg><use href="#icon-x"/></svg></button>
+
+						<div class="intopic">
+							<div class="sorted">
+								<p>6a</p>
+								<!-- <button class="btn action2"><svg><use href="#icon-x"/></svg></button> -->
+							</div>
+						</div>
+					</div>
+					<div class="topic" onclick="">
+						<h3>Differentiation</h3>
+						<h4>67 Questions</h4>
+
+						<svg class="topicaction"><use href="#icon-toggle"/></svg>
+						<button class="topicaction btn action2"><svg><use href="#icon-x"/></svg></button>
+
+						<div class="intopic">
+							<div class="sorted">
+								<p>6a</p>
+								<!-- <button class="btn action2"><svg><use href="#icon-x"/></svg></button> -->
+							</div>
+						</div>
+					</div>
+					<div class="topic" onclick="">
+						<h3>Differentiation</h3>
+						<h4>67 Questions</h4>
+
+						<svg class="topicaction"><use href="#icon-toggle"/></svg>
+						<button class="topicaction btn action2"><svg><use href="#icon-x"/></svg></button>
+
+						<div class="intopic">
+							<div class="sorted">
+								<p>6a</p>
+								<!-- <button class="btn action2"><svg><use href="#icon-x"/></svg></button> -->
+							</div>
+						</div>
+					</div>
+					<div class="topic" onclick="">
+						<h3>Differentiation</h3>
+						<h4>67 Questions</h4>
+
+						<svg class="topicaction"><use href="#icon-toggle"/></svg>
+						<button class="topicaction btn action2"><svg><use href="#icon-x"/></svg></button>
+
+						<div class="intopic">
+							<div class="sorted">
+								<p>6a</p>
+								<!-- <button class="btn action2"><svg><use href="#icon-x"/></svg></button> -->
+							</div>
+						</div>
+					</div>
+				</div>
+				<button id="newtopic" class="btn action1">New</button>
 			</div>
 		</div>
 		<div id="paper" class="pdf">
 			<canvas id="pcanvas"></canvas>
-			<button class="btn prev" onclick="turn(0, -1)"><svg><use href="#prev"/></svg></button>
-			<button class="btn next" onclick="turn(0, 1)"><svg><use href="#next"/></svg></button>
+			<button class="btn prev" onclick="turn(0, -1)"><svg><use href="#icon-prev"/></svg></button>
+			<button class="btn next" onclick="turn(0, 1)"><svg><use href="#icon-next"/></svg></button>
 			<p id="ppn">...</p>
 		</div>
 		<div id="marking" class="pdf">
 			<canvas id="mcanvas"></canvas>
-			<button class="btn prev" onclick="turn(1, -1)"><svg><use href="#prev"/></svg></button>
-			<button class="btn next" onclick="turn(1, 1)"><svg><use href="#next"/></svg></button>
+			<button class="btn prev" onclick="turn(1, -1)"><svg><use href="#icon-prev"/></svg></button>
+			<button class="btn next" onclick="turn(1, 1)"><svg><use href="#icon-next"/></svg></button>
 			<p id="mpn">...</p>
 		</div>
 		<div id="right">
@@ -435,7 +628,7 @@ input[type=number] {
 			<div class="select" id="selecttopic" data-value="None">
 				<button class="choice" onclick="toggleSelect()">
 					<p>None</p>
-					<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path d="M7 10L12 15L17 10" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></g></svg>
+					<svg><use href="#icon-toggle"/></svg>
 				</button>
 				<div class="options" id="topicoptions" hidden>
 					<button onclick="select(this)" data-value="Test">Test</button>
