@@ -17,6 +17,7 @@
 
 	--px: 1px;
 	--grid: round(calc(2 * var(--u)), calc(10 * var(--px)));
+	--margin: calc(1.15 * var(--u));
 }
 *::selection {
 	background: #fff7;
@@ -219,34 +220,41 @@ input[type=number] {
 	left: 0;
 	box-sizing: border-box;
 }
-#left {
-	padding: 5%;
+#left, #right {
+	padding: var(--margin);
 	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
 	gap: calc(1 * var(--u));
 }
-#logo, #options, #right {
+#logo, #options, #add, #done {
 	width: 100%;
 	background: var(--bg);
 	border: var(--px) solid var(--bg2);
 	border-radius: calc(2 * var(--u));
 	box-sizing: border-box;
 }
+#logo {
+	position: relative;
+	height: calc(9 * var(--u));
+}
 #logo h1 {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+
 	width: 100%;
 	font-family: Arial;
 	color: #fff;
-	margin: calc(2.5 * var(--u)) 0;
+	margin: 0;
 	text-align: center;
 	font-weight: 700;
 	font-size: calc(2.5 * var(--u));
 }
-#right {
-	margin: 5%;
+#add {
 	padding: calc(1.5 * var(--u));
 	padding-top: 0;
-	width: 90%;
 	box-sizing: border-box;
 	display: flex;
 	flex-direction: column;
@@ -259,10 +267,14 @@ input[type=number] {
 		margin: 0;
 	}
 	h1 {
+		height: calc(9 * var(--u));
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
 		text-align: center;
 		font-weight: 700;
 		font-size: calc(2.5 * var(--u));
-		margin: calc(2.5 * var(--u)) 0;
 	}
 	p {
 		font-size: calc(1.5 * var(--u));
@@ -271,10 +283,19 @@ input[type=number] {
 	input, .select {
 		margin-bottom: calc(1 * var(--u));
 	}
-	.btn {
-		padding: calc(.75 * var(--u)) calc(1.5 * var(--u));
-	}
 }
+#done {
+	padding: calc(1.5 * var(--u));
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+#right .btn {
+	padding: 0 calc(1.5 * var(--u));
+	height: calc(4.25 * var(--u));
+
+}
+
 #paper {
 	margin-right: round(calc(.25 * var(--u)), var(--px));
 }
@@ -347,39 +368,39 @@ input[type=number] {
 
 #options {
 	height: 100%;
+	height: calc(100vh - 2*var(--margin) - 10*var(--u));
+	padding: var(--margin);
 
 	display: grid;
-	grid-template-rows: 1fr auto;
+	grid-template-columns: 1fr 1fr;
+	grid-template-rows: auto calc(4.25 * var(--u));
+	gap: var(--margin);
+	column-gap: calc(var(--margin)/2);
 }
 #topics {
-	/* * { outline: 1px solid red; } */
 	height: 100%;
 	max-height: 100%;
-	margin: 5%;
-	padding-bottom: 5%;
+	grid-column: 1 / 3;
 
-	display: grid;
-	/* flex-direction: column; */
-	grid-template-columns: 1fr;
+	display: flex;
+	flex-direction: column;
 	gap: calc(1 * var(--u));
 
-	overflow: hidden;
-	/* overflow-x: hidden; */
-	/* overflow-y: scroll; */
+	overflow-x: hidden;
+	overflow-y: scroll;
 
 	&[data-value="0"] button.topicaction { display: none; }
 	&[data-value="1"] svg.topicaction { display: none; }
 }
 .topic {
 	position: relative;
-	height: calc(5 * var(--u));
 	width: 100%;
 	background: var(--bg);
 	border: var(--px) solid var(--bg2);
 	border-radius: calc(1 * var(--u));
 	box-sizing: border-box;
 
-	padding: 5%;
+	padding: var(--margin);
 
 	display: grid;
 	grid-template-columns: auto calc(2 * var(--u));
@@ -434,21 +455,23 @@ input[type=number] {
 		}
 	}
 	.intopic {
-		/* position: absolute; */
+		display: none;
 		top: 100%;
 		z-index: 100;
 
 		width: 100%;
 
-		border: 1px solid red;
 		box-sizing: border-box;
 	}
 }
-#newtopic {
-	padding: calc(.75 * var(--u)) calc(1.5 * var(--u));
+#newtopic, #newtopics {
+	height: calc(4.25 * var(--u));
 	align-self: center;
-	margin: 5%;
 }
+#newtopic { grid-column: 1 / 2; }
+#newtopics { grid-column: 2 / 3; }
+
+#template { display: none; }
 
 #mobile-wall {
 	display: none;
@@ -474,10 +497,9 @@ input[type=number] {
 	color: #fff;
 }
 @media only screen and (max-aspect-ratio: 5/4) {
-	#layout { --pdf: 20px; }
-	/* #mobile-wall {
+	#mobile-wall {
 		display: block;
-	} */
+	}
 }
 
 @media only screen and (min-aspect-ratio: 1/1) {
@@ -519,92 +541,22 @@ input[type=number] {
 			</div>
 			<div id="options">
 				<div id="topics" data-value="0">
-					<div class="topic" onclick="">
-						<h3>Differentiation</h3>
-						<h4>67 Questions</h4>
+					<div class="topic" id="template">
+						<h3></h3>
+						<h4>0 Questions</h4>
 
 						<svg class="topicaction"><use href="#icon-toggle"/></svg>
 						<button class="topicaction btn action2"><svg><use href="#icon-x"/></svg></button>
 
-						<div class="intopic">
+						<!-- <div class="intopic">
 							<div class="sorted">
 								<p>6a</p>
-								<!-- <button class="btn action2"><svg><use href="#icon-x"/></svg></button> -->
 							</div>
-						</div>
-					</div>
-					<div class="topic" onclick="">
-						<h3>Differentiation</h3>
-						<h4>67 Questions</h4>
-
-						<svg class="topicaction"><use href="#icon-toggle"/></svg>
-						<button class="topicaction btn action2"><svg><use href="#icon-x"/></svg></button>
-
-						<div class="intopic">
-							<div class="sorted">
-								<p>6a</p>
-								<!-- <button class="btn action2"><svg><use href="#icon-x"/></svg></button> -->
-							</div>
-						</div>
-					</div>
-					<div class="topic" onclick="">
-						<h3>Differentiation</h3>
-						<h4>67 Questions</h4>
-
-						<svg class="topicaction"><use href="#icon-toggle"/></svg>
-						<button class="topicaction btn action2"><svg><use href="#icon-x"/></svg></button>
-
-						<div class="intopic">
-							<div class="sorted">
-								<p>6a</p>
-								<!-- <button class="btn action2"><svg><use href="#icon-x"/></svg></button> -->
-							</div>
-						</div>
-					</div>
-					<div class="topic" onclick="">
-						<h3>Differentiation</h3>
-						<h4>67 Questions</h4>
-
-						<svg class="topicaction"><use href="#icon-toggle"/></svg>
-						<button class="topicaction btn action2"><svg><use href="#icon-x"/></svg></button>
-
-						<div class="intopic">
-							<div class="sorted">
-								<p>6a</p>
-								<!-- <button class="btn action2"><svg><use href="#icon-x"/></svg></button> -->
-							</div>
-						</div>
-					</div>
-					<div class="topic" onclick="">
-						<h3>Differentiation</h3>
-						<h4>67 Questions</h4>
-
-						<svg class="topicaction"><use href="#icon-toggle"/></svg>
-						<button class="topicaction btn action2"><svg><use href="#icon-x"/></svg></button>
-
-						<div class="intopic">
-							<div class="sorted">
-								<p>6a</p>
-								<!-- <button class="btn action2"><svg><use href="#icon-x"/></svg></button> -->
-							</div>
-						</div>
-					</div>
-					<div class="topic" onclick="">
-						<h3>Differentiation</h3>
-						<h4>67 Questions</h4>
-
-						<svg class="topicaction"><use href="#icon-toggle"/></svg>
-						<button class="topicaction btn action2"><svg><use href="#icon-x"/></svg></button>
-
-						<div class="intopic">
-							<div class="sorted">
-								<p>6a</p>
-								<!-- <button class="btn action2"><svg><use href="#icon-x"/></svg></button> -->
-							</div>
-						</div>
+						</div> -->
 					</div>
 				</div>
-				<button id="newtopic" class="btn action1">New</button>
+				<button id="newtopic" class="btn action1" onclick="newTopic()">New</button>
+				<button id="newtopics" class="btn action1" onclick="newTopics()">Bulk</button>
 			</div>
 		</div>
 		<div id="paper" class="pdf">
@@ -620,38 +572,38 @@ input[type=number] {
 			<p id="mpn">...</p>
 		</div>
 		<div id="right">
-			<h1>Add Question</h1>
-			<p>Question Number:</p>
-			<input type="text" id="qn">
+			<div id="add" style="flex-grow: 1;">
+				<h1>Add Question</h1>
+				<p>Question Number:</p>
+				<input type="text" id="qn">
 
-			<p>Select Topic:</p>
-			<div class="select" id="selecttopic" data-value="None">
-				<button class="choice" onclick="toggleSelect()">
-					<p>None</p>
-					<svg><use href="#icon-toggle"/></svg>
-				</button>
-				<div class="options" id="topicoptions" hidden>
-					<button onclick="select(this)" data-value="Test">Test</button>
-					<button onclick="select(this)" data-value="Test">Test</button>
-					<button onclick="select(this)" data-value="Test">Test</button>
-					<button onclick="select(this)" data-value="Test">Test</button>
-					<button onclick="select(this)" data-value="None">None</button>
+				<p>Select Topic:</p>
+				<div class="select" id="selecttopic" data-value="None">
+					<button class="choice" onclick="toggleSelect()">
+						<p>None</p>
+						<svg><use href="#icon-toggle"/></svg>
+					</button>
+					<div class="options" id="topicoptions" hidden>
+						<button onclick="select(this)" data-value="None">None</button>
+					</div>
 				</div>
-			</div>
 
-			<button class="btn action1">Save</button>
+				<button class="btn action1" onclick="addQuestion()">Save</button>
+			</div>
+			<div id="done">
+				<button class="btn action" onclick="download()">Done</button>
+			</div>
 		</div>
 	</main>
 
 	<script src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js'></script>
 	<script>
-		const rawData = window.location.search.slice(1);
-		// const data = atob(rawData)?.split('\n');
-
-		const data = [
-			"https://higher.sqa.my/maths/2025/H_Maths_2025_Paper1.pdf",
-			"https://higher.sqa.my/maths/2025/H_Maths_2025_Marking1.pdf"
-		];
+		let rawData = window.location.search.slice(1);
+		if (rawData.startsWith('_')) {
+			localStorage.removeItem('data');
+			rawData = rawData.slice(1);
+		}
+		const data = atob(rawData)?.split('\n');
 
 		let pdfs = [{
 			url: data[0],
@@ -678,6 +630,10 @@ input[type=number] {
 			q: {}
 		};
 
+		function saveState() {
+			localStorage.setItem('data', JSON.stringify(state));
+		}
+
 		const selectTopic = document.getElementById('selecttopic');
 		const topicOptions = document.getElementById('topicoptions');
 
@@ -686,6 +642,32 @@ input[type=number] {
 			selectTopic.dataset.value = e.dataset.value;
 			topicOptions.hidden = true;
 		}
+
+		function updateTopics() {
+			topicOptions.innerHTML = '';
+			Array.from(document.querySelectorAll('.topic:not(#template)')).map(e => e.dataset.value).forEach(t => {
+				const btn = document.createElement('button');
+				btn.dataset.value = t;
+				btn.innerText = t;
+				btn.onclick = () => select(btn);
+				topicOptions.appendChild(btn);
+			});
+			fixStateOrder();
+		}
+		function updateQuestions() {
+			Array.from(document.querySelectorAll('.topic:not(#template)')).forEach(t => {
+				const len = state.q[t.dataset.value].length;
+				t.querySelector('h4').innerText = `${len} Question${len === 1 ? '' : 's'}`;
+			});
+		}
+		function fixStateOrder() {
+			const oldState = JSON.parse(JSON.stringify(state.q));
+			state.q = {};
+			Array.from(document.querySelectorAll('.topic:not(#template)')).map(e => e.dataset.value).forEach(t => {
+				state.q[t] = oldState[t];
+			});
+		}
+
 		function toggleSelect() {
 			topicOptions.hidden = topicOptions.hidden ? false : true;
 		}
@@ -694,6 +676,70 @@ input[type=number] {
 				topicOptions.hidden = true;
 			}
 		});
+
+		const topics = document.getElementById('topics');
+		const template = document.getElementById('template');
+		function addTopic(name, ib=true, visual=false) {
+			console.log(name)
+			if (!visual && Object.keys(state.q).includes(name)) return;
+
+			const nt = template.cloneNode(true);
+			nt.removeAttribute('id');
+
+			nt.querySelector('h3').innerText = name;
+			nt.dataset.value = name;
+
+			if (topics.children.length === 1) topics.appendChild(nt);
+			else topics.insertBefore(nt, (ib ? topics.children[1] : topics.children[topics.children.length - 1]) || null);
+			if (!visual) state.q[name] = [];
+		}
+
+		addTopic('None');
+
+		if (localStorage.getItem('data')) {
+			let previous = JSON.parse(localStorage.getItem('data'));
+			if (!state.u || (previous.u[0] === state.u[0] && previous.u[1] === state.u[1])) {
+				state = previous;
+				Object.keys(state.q).filter(t => t !== 'None').forEach(t => addTopic(t, false, true));
+				updateTopics();
+				updateQuestions();
+			}
+		}
+		saveState();
+
+		function newTopic() {
+			addTopic(prompt('Enter Name:'));
+			updateTopics();
+			saveState();
+		}
+		function newTopics() {
+			Object.keys(JSON.parse(prompt('Enter Old JSON:')).q).forEach(t => addTopic(t, false));
+			updateTopics();
+			saveState();
+		}
+
+		const questionNumber = document.getElementById('qn');
+		function addQuestion() {
+			if (!questionNumber.value || !selectTopic.dataset.value) return
+			state.q[selectTopic.dataset.value].push([questionNumber.value, pdfs[0].page, pdfs[1].page]);
+			updateQuestions();
+			saveState();
+		}
+
+		function download() {
+			const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json", });
+			const url = URL.createObjectURL(blob);
+
+			const a = document.createElement("a");
+			a.href = url;
+			a.download = 'Sorted Questions.json';
+
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+
+			URL.revokeObjectURL(url);
+		}
 
 		function render(pdf, n) {
 			pdf.isRendering = true;
