@@ -708,12 +708,16 @@ input[type=number] {
 		saveState();
 
 		function newTopic() {
-			addTopic(prompt('Enter Name:'));
+			const name = prompt('Enter Name:');
+			if (!name) return
+			addTopic(name);
 			updateTopics();
 			saveState();
 		}
 		function newTopics() {
-			Object.keys(JSON.parse(prompt('Enter Old JSON:')).q).forEach(t => addTopic(t, false));
+			const old = prompt('Enter Old JSON:');
+			if (!old) return;
+			Object.keys(JSON.parse(old).q).forEach(t => addTopic(t, false));
 			updateTopics();
 			saveState();
 		}
